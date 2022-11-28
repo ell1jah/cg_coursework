@@ -34,7 +34,12 @@ namespace ExhibitVisualization
             g = canvas.CreateGraphics();
             scene = new Scene(canvas.Size);
             scene.CreateScene();
-            
+
+            foreach (Model m in scene.GetModels())
+            {
+                objectList.Items.Add(m.name);
+            }
+
             //Model building = Model.LoadModel(@"D:\GitHub\bmstu_CG_CP\ExhibitVisualization\ExhibitVisualization\res\power.obj");
             //scene.Add(building);
             SetSun();
@@ -128,107 +133,52 @@ namespace ExhibitVisualization
             canvas.Image = zbuf.GetSunImage();
         }
 
-        private void buttonAddBuilding_Click(object sender, EventArgs e)
-        {
-            int x = Convert.ToInt32(textBoxSX.Text);
-            int z = Convert.ToInt32(textBoxSZ.Text);
-            int dx = Convert.ToInt32(textBoxSDx.Text);
-            int dz = Convert.ToInt32(textBoxSDz.Text);
-            int h = Convert.ToInt32(textBoxSH.Text);
-            scene.CreateCube(Color.DarkKhaki, x, dx, z, dz, h);
-            HandleSceneChange();
-        }
-
         private void HandleSceneChange()
         {
             sceneTurned = scene.GetTurnedScene(tetax, tetay, tetaz);
             zbuf = new Zbuffer(sceneTurned, canvas.Size, currentSun);
             canvas.Image = zbuf.AddShadows();
         }
-        #endregion
 
-        #region Дождь
-        private void buttonRain_Click(object sender, EventArgs e)
+        private void label4_Click(object sender, EventArgs e)
         {
-            int intensity = Convert.ToInt32(textBoxIntensiveness.Text);
-            int dx = Convert.ToInt32(textBoxDx.Text);
-            int dy = Convert.ToInt32(textBoxDy.Text);
-            int dz = Convert.ToInt32(textBoxDz.Text);
-            Vector wind = new Vector(dx, dy, dz);
 
-            StartRain(intensity, wind);
-
-            int delay = Convert.ToInt32(textBoxDelay.Text);
-            for (int i = 0; i < 100; i++)
-            {
-                UpdRain();
-                rain.InitParticles(intensity);
-                System.Threading.Thread.Sleep(delay);
-            }
-
-            while (!rain.IsEmpty())
-            {
-                UpdRain();
-                System.Threading.Thread.Sleep(delay);
-            }
-            /*
-            for (int i = 0; i < 50; i++) // while not empty?
-            {
-                UpdRain();
-                System.Threading.Thread.Sleep(delay);
-            }*/
-        }
-        
-
-        private void StartRain(int intensity, Vector direction)
-        {
-            rain = new ParticleSystem(canvas.Width, canvas.Height, direction, intensity);
         }
 
-        private void UpdRain()
+        private void groupBox6_Enter(object sender, EventArgs e)
         {
-            canvas.Refresh();
-            rain.ProcessSystem(g, new Pen(Color.LightBlue, 2));
-            canvas.Update();
-        }
-        
-        #endregion
 
-        #region Туман
-        private void buttonFog_Click(object sender, EventArgs e)
-        {
-            int far = Convert.ToInt32(textBoxfar.Text);
-            int close = Convert.ToInt32(textBoxClose.Text);
-            canvas.Image = Fog.AddFog(zbuf, far, close);
         }
-        #endregion
-        
-        #region Повороты
-        private void buttonLeft_Click(object sender, EventArgs e)
+
+        private void groupBox7_Enter(object sender, EventArgs e)
         {
-            tetay -= 45;
+
+        }
+
+        private void label1_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button1_Click_1(object sender, EventArgs e)
+        {
+            tetax += (double)numericUpDown1.Value;
             HandleSceneChange();
         }
 
-        private void buttonRight_Click(object sender, EventArgs e)
+        private void button2_Click_1(object sender, EventArgs e)
         {
-            tetay += 45;
-            HandleSceneChange();
-        }
-        
-        private void buttonUp_Click(object sender, EventArgs e)
-        {
-            tetax += 20;
+            tetay += (double)numericUpDown1.Value;
             HandleSceneChange();
         }
 
-        private void buttonDown_Click(object sender, EventArgs e)
+        private void button3_Click_1(object sender, EventArgs e)
         {
-            tetax -= 20;
+            tetaz += (double)numericUpDown1.Value;
             HandleSceneChange();
         }
-
         #endregion
+        
 
     }
 }

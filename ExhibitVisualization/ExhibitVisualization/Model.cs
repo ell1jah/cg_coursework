@@ -16,13 +16,15 @@ namespace ExhibitVisualization
         public List<Polygon> polygons;
         private List<int[]> indexes;
         private Color basicColor = Color.Black;
+        public string name;
         
-        public Model(Color color)
+        public Model(Color color, string name)
         {
             basicColor = color;
             vertices = new List<Point3D>();
             polygons = new List<Polygon>();
             indexes = new List<int[]>();
+            this.name = name;
         }
         
         public void AddVertex(Point3D vertex)
@@ -87,7 +89,7 @@ namespace ExhibitVisualization
         /// </summary>
         public Model GetTurnedModel(double tetax, double tetay, double tetaz)
         {
-            Model m = new Model(basicColor);
+            Model m = new Model(basicColor, this.name);
             
             foreach (Point3D p in vertices)
             {
@@ -107,14 +109,12 @@ namespace ExhibitVisualization
             return m;
         }
 
-        public static Model LoadModel(string path)
+        public static Model LoadModel(string path, Color color, int xCent, int yCent, int zCent, string name)
         {
             if (!File.Exists(path))
                 return null;
-            
-            Debug.WriteLine("NOTNULL");
 
-            Model m = new Model(Color.Red);
+            Model m = new Model(color, name);
             foreach (string line in File.ReadLines(path))
             {
                 if (line == "")
@@ -124,9 +124,9 @@ namespace ExhibitVisualization
                     var el = line.Split(' ');
                     
                     if (el.Length == 5)
-                        m.AddVertex(new Point3D((int)Convert.ToDouble(el[2].Replace('.', ',')), (int)Convert.ToDouble(el[3].Replace('.', ',')), (int)Convert.ToDouble(el[4].Replace('.', ','))));
+                        m.AddVertex(new Point3D(xCent + (int)Convert.ToDouble(el[2].Replace('.', ',')),  yCent - (int)Convert.ToDouble(el[3].Replace('.', ',')), zCent + (int)Convert.ToDouble(el[4].Replace('.', ','))));
                     else
-                        m.AddVertex(new Point3D((int)Convert.ToDouble(el[1].Replace('.', ',')), (int)Convert.ToDouble(el[2].Replace('.', ',')), (int)Convert.ToDouble(el[3].Replace('.', ','))));
+                        m.AddVertex(new Point3D(xCent +  (int)Convert.ToDouble(el[1].Replace('.', ',')), yCent - (int)Convert.ToDouble(el[2].Replace('.', ',')), zCent + (int)Convert.ToDouble(el[3].Replace('.', ','))));
                 }
                 else if (line[0] == 'f')
                 {

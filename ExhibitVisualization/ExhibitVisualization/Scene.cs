@@ -14,6 +14,11 @@ namespace ExhibitVisualization
         Size size;
         static int ground = 400;
 
+        private const string helicopterPath =
+            "C:\\Bmstu\\5sem\\cursache\\cg_coursework\\ExhibitVisualization\\ExhibitVisualization\\models\\Seahawk.obj";
+        private const string spiderPath =
+            "C:\\Bmstu\\5sem\\cursache\\cg_coursework\\ExhibitVisualization\\ExhibitVisualization\\models\\Only_Spider_with_Animations_Export.obj";
+
         public Scene(Size size)
         {
             scene = new List<Model>();
@@ -32,10 +37,10 @@ namespace ExhibitVisualization
 
         public void CreateScene()
         {
-            CreateGround(Color.Green, size.Width / 2, 400, 0, 500, 5);
+            CreateGround(Color.CadetBlue, size.Width / 2, 400, 0, 500, 5);
             CreateCube(Color.DarkOrange, 300, 100, 0, 150, 300);
-            CreateCube(Color.Red, 700, 150, 100, 100, 100, true);
-            CreateHelicopter();
+            CreateHelicopter(Color.DarkGreen, size.Width / 2, 400, 500);
+            CreateSpider(Color.Black, size.Width / 2, 400, 500);
         }
         
         public Scene GetTurnedScene(double tetax, double tetay, double tetaz)
@@ -53,7 +58,7 @@ namespace ExhibitVisualization
         #region Создание Параллелепипедов
         public void CreateCube(Color color, int xCent, int dx, int zCent, int dz, int height, bool roof = false)
         {
-            Model m = new Model(color);
+            Model m = new Model(color, "Куб");
             
             //передняя
             m.AddVertex(new Point3D(xCent - dx, ground, zCent + dz)); // левая нижняя
@@ -86,12 +91,12 @@ namespace ExhibitVisualization
             scene.Add(m);
         }
 
-        private void CreateHelicopter()
+        private void LoadModel(string path, Color color, int xCent, int yCent, int zCent, string name)
         {
-            Model m = Model.LoadModel("C:\\Bmstu\\5sem\\cursache\\cg_coursework\\ExhibitVisualization\\ExhibitVisualization\\Formula 1 mesh.obj");
+            Model m = Model.LoadModel(path, color, xCent, yCent, zCent, name);
             if (m == null)
             {
-                Debug.WriteLine("File does not exist");
+                Debug.WriteLine("ERROR: Object file does not exist: " + path);
             }
             else
             {
@@ -99,9 +104,19 @@ namespace ExhibitVisualization
             }
         }
 
+        public void CreateHelicopter(Color color, int xCent, int yCent, int zCent)
+        {
+            LoadModel(helicopterPath, color, xCent, yCent, zCent, "Вертолет");
+        }
+        
+        public void CreateSpider(Color color, int xCent, int yCent, int zCent)
+        {
+            LoadModel(spiderPath, color, xCent, yCent, zCent, "Самолет");
+        }
+
         private void CreateGround(Color color, int xCent, int dx, int zCent, int dz)
         {
-            Model m = new Model(color);
+            Model m = new Model(color, "Пол");
 
             m.AddVertex(new Point3D(xCent + dx, ground, zCent + dz));
             m.AddVertex(new Point3D(xCent - dx, ground, zCent + dz));
@@ -115,7 +130,7 @@ namespace ExhibitVisualization
 
         private void CreateGround(Color color, int xCent, int dx, int zCent, int dz, int height)
         {
-            Model m = new Model(color);
+            Model m = new Model(color, "Пол");
 
             //передняя
             m.AddVertex(new Point3D(xCent - dx, ground + height, zCent + dz)); // левая нижняя

@@ -96,12 +96,13 @@
     <None Include="LightDir2.png" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Formula 1 mesh.obj" />
-    <Content Include="Group4.obj" />
-    <Content Include="Humvee.obj" />
-    <Content Include="Seahawk.obj" />
-    <Content Include="Shelby.obj" />
-    <Content Include="Wine_bottle.obj" />
+    <Content Include="models\Formula 1 mesh.obj" />
+    <Content Include="models\Group4.obj" />
+    <Content Include="models\Humvee.obj" />
+    <Content Include="models\Only_Spider_with_Animations_Export.obj" />
+    <Content Include="models\Seahawk.obj" />
+    <Content Include="models\Shelby.obj" />
+    <Content Include="models\Wine_bottle.obj" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
