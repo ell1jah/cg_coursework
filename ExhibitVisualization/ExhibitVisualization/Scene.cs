@@ -35,6 +35,17 @@ namespace ExhibitVisualization
             return scene;
         }
 
+        public Model GetModelByName(string name)
+        {
+            foreach (Model m in scene)
+            {
+                if (m.name == name)
+                    return m;
+            }
+
+            return null;
+        }
+
         public void CreateScene()
         {
             CreateGround(Color.CadetBlue, size.Width / 2, 400, 0, 500, 5);
@@ -111,7 +122,7 @@ namespace ExhibitVisualization
         
         public void CreateSpider(Color color, int xCent, int yCent, int zCent)
         {
-            LoadModel(spiderPath, color, xCent, yCent, zCent, "Самолет");
+            LoadModel(spiderPath, color, xCent, yCent, zCent, "Паук");
         }
 
         private void CreateGround(Color color, int xCent, int dx, int zCent, int dz)

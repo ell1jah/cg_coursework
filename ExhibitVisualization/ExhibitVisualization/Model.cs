@@ -17,6 +17,7 @@ namespace ExhibitVisualization
         private List<int[]> indexes;
         private Color basicColor = Color.Black;
         public string name;
+        public Point3D centre = new Point3D(0, 0, 0);
         
         public Model(Color color, string name)
         {
@@ -80,7 +81,7 @@ namespace ExhibitVisualization
             double cosTetZ = Math.Cos(tetaz), sinTetZ = Math.Sin(tetaz);
             foreach (Point3D v in vertices)
             {
-                Transformation.Transform(ref v.x, ref v.y, ref v.z, cosTetX, sinTetX, cosTetY, sinTetY, cosTetZ, sinTetZ);
+                Transformation.Transform(ref v.x, ref v.y, ref v.z, cosTetX, sinTetX, cosTetY, sinTetY, cosTetZ, sinTetZ, centre);
             }
         }
         
@@ -115,6 +116,7 @@ namespace ExhibitVisualization
                 return null;
 
             Model m = new Model(color, name);
+            m.centre = new Point3D(xCent, yCent, zCent);
             foreach (string line in File.ReadLines(path))
             {
                 if (line == "")

@@ -17,37 +17,37 @@ namespace ExhibitVisualization
             centerY = (int)(h/2);
         }
                 
-        static void RotateX(ref double y, ref double z, double tetax)
+        static void RotateX(ref double y, ref double z, double tetax, Point3D centre)
         {
             tetax = tetax * Math.PI / 180;
             double buf = y;
-            y = centerY + Math.Cos(tetax) * (y - centerY) - Math.Sin(tetax) * z;
-            z = Math.Cos(tetax) * z + Math.Sin(tetax) * (buf - centerY);
+            y = centre.y + Math.Cos(tetax) * (y - centre.y) - Math.Sin(tetax) * z;
+            z = centre.z + Math.Cos(tetax) * (z - centre.z) + Math.Sin(tetax) * (buf - centre.y);
         }
 
-        static void RotateX(ref double y, ref double z, double cosTetX, double sinTetX)
+        static void RotateX(ref double y, ref double z, double cosTetX, double sinTetX, Point3D centre)
         {
             double buf = y;
-            y = centerY + cosTetX * (y - centerY) - sinTetX * z;
-            z = cosTetX * z + sinTetX * (buf - centerY);
+            y = centre.y + cosTetX * (y - centre.y) - sinTetX * (z - centre.z);
+            z = centre.z + cosTetX * (z - centre.z) + sinTetX * (buf - centre.z);
         }
 
-        static void RotateY(ref double x, ref double z, double tetay)
+        static void RotateY(ref double x, ref double z, double tetay, Point3D centre)
         {
             tetay = tetay * Math.PI / 180;
             double buf = x;
-            x = centerX + Math.Cos(tetay) * (x - centerX) - Math.Sin(tetay) * z;
-            z = Math.Cos(tetay) * z + Math.Sin(tetay) * (buf - centerX);
+            x = centre.x + Math.Cos(tetay) * (x - centre.x) - Math.Sin(tetay) * (z - centre.z);
+            z = centre.z + Math.Cos(tetay) * (z - centre.z) + Math.Sin(tetay) * (buf - centre.x);
         }
 
-        static void RotateY(ref double x, ref double z, double cosTetY, double sinTetY)
+        static void RotateY(ref double x, ref double z, double cosTetY, double sinTetY, Point3D centre)
         {
             double buf = x;
-            x = centerX + cosTetY * (x - centerX) - sinTetY * z;
-            z = cosTetY * z + sinTetY * (buf - centerX);
+            x = centre.x + cosTetY * (x - centre.x) - sinTetY * (z - centre.z);
+            z = centre.z + cosTetY * (z - centre.z) + sinTetY * (buf - centre.x);
         }
 
-        static void RotateZ(ref double x, ref double y, double tetaz)
+        static void RotateZ(ref double x, ref double y, double tetaz, Point3D centre)
         {
             tetaz = tetaz * Math.PI / 180;
             double buf = x;
@@ -55,7 +55,7 @@ namespace ExhibitVisualization
             y = centerY + Math.Cos(tetaz) * (y - centerY) + Math.Sin(tetaz) * (buf - centerX);
         }
 
-        static void RotateZ(ref double x, ref double y, double cosTetZ, double sinTetZ)
+        static void RotateZ(ref double x, ref double y, double cosTetZ, double sinTetZ, Point3D centre)
         {
             double buf = x;
             x = centerX + cosTetZ * (x - centerX) - sinTetZ * (y - centerY);
@@ -76,23 +76,23 @@ namespace ExhibitVisualization
             double x_tmp = x;
             double y_tmp = y;
             double z_tmp = z;
-            RotateX(ref y_tmp, ref z_tmp, tetax);
-            RotateY(ref x_tmp, ref z_tmp, tetay);
-            RotateZ(ref x_tmp, ref y_tmp, tetaz);
+            RotateX(ref y_tmp, ref z_tmp, tetax, new Point3D(centerX, centerY, 0));
+            RotateY(ref x_tmp, ref z_tmp, tetay, new Point3D(centerX, centerY, 0));
+            RotateZ(ref x_tmp, ref y_tmp, tetaz, new Point3D(centerX, centerY, 0));
 
             x = (int)x_tmp;
             y = (int)y_tmp;
             z = (int)z_tmp;
         }
 
-        public static void Transform(ref int x, ref int y, ref int z, double cosTetX, double sinTetX, double cosTetY, double sinTetY, double cosTetZ, double sinTetZ)
+        public static void Transform(ref int x, ref int y, ref int z, double cosTetX, double sinTetX, double cosTetY, double sinTetY, double cosTetZ, double sinTetZ, Point3D centre)
         {
             double x_tmp = x;
             double y_tmp = y;
             double z_tmp = z;
-            RotateX(ref y_tmp, ref z_tmp, cosTetX, sinTetX);
-            RotateY(ref x_tmp, ref z_tmp, cosTetY, sinTetY);
-            RotateZ(ref x_tmp, ref y_tmp, cosTetZ, sinTetZ);
+            RotateX(ref y_tmp, ref z_tmp, cosTetX, sinTetX, centre);
+            RotateY(ref x_tmp, ref z_tmp, cosTetY, sinTetY, centre);
+            RotateZ(ref x_tmp, ref y_tmp, cosTetZ, sinTetZ, centre);
 
             x = (int)x_tmp;
             y = (int)y_tmp;
@@ -104,9 +104,9 @@ namespace ExhibitVisualization
             double x_tmp = x;
             double y_tmp = y;
             double z_tmp = z;
-            RotateX(ref y_tmp, ref z_tmp, tetax);
-            RotateY(ref x_tmp, ref z_tmp, tetay);
-            RotateZ(ref x_tmp, ref y_tmp, tetaz);
+            RotateX(ref y_tmp, ref z_tmp, tetax, new Point3D(centerX, centerY, 0));
+            RotateY(ref x_tmp, ref z_tmp, tetay, new Point3D(centerX, centerY, 0));
+            RotateZ(ref x_tmp, ref y_tmp, tetaz, new Point3D(centerX, centerY, 0));
 
             return new Point3D((int)x_tmp, (int)y_tmp, (int)z_tmp);
         }
@@ -116,9 +116,9 @@ namespace ExhibitVisualization
             double x_tmp = p.x;
             double y_tmp = p.y;
             double z_tmp = p.z;
-            RotateX(ref y_tmp, ref z_tmp, tetax);
-            RotateY(ref x_tmp, ref z_tmp, tetay);
-            RotateZ(ref x_tmp, ref y_tmp, tetaz);
+            RotateX(ref y_tmp, ref z_tmp, tetax, new Point3D(centerX, centerY, 0));
+            RotateY(ref x_tmp, ref z_tmp, tetay, new Point3D(centerX, centerY, 0));
+            RotateZ(ref x_tmp, ref y_tmp, tetaz, new Point3D(centerX, centerY, 0));
 
             return new Point3D((int)x_tmp, (int)y_tmp, (int)z_tmp);
         }

@@ -40,6 +40,8 @@ namespace ExhibitVisualization
                 objectList.Items.Add(m.name);
             }
 
+            objectList.SetSelected(0, true);
+
             //Model building = Model.LoadModel(@"D:\GitHub\bmstu_CG_CP\ExhibitVisualization\ExhibitVisualization\res\power.obj");
             //scene.Add(building);
             SetSun();
@@ -162,19 +164,25 @@ namespace ExhibitVisualization
 
         private void button1_Click_1(object sender, EventArgs e)
         {
-            tetax += (double)numericUpDown1.Value;
+            string curName = objectList.SelectedItem.ToString();
+            var m = scene.GetModelByName(curName);
+            m.TransformModel((double)numericUpDown1.Value, 0, 0);
             HandleSceneChange();
         }
 
         private void button2_Click_1(object sender, EventArgs e)
         {
-            tetay += (double)numericUpDown1.Value;
+            string curName = objectList.SelectedItem.ToString();
+            var m = scene.GetModelByName(curName);
+            m.TransformModel(0,(double)numericUpDown1.Value ,0);
             HandleSceneChange();
         }
 
         private void button3_Click_1(object sender, EventArgs e)
         {
-            tetaz += (double)numericUpDown1.Value;
+            string curName = objectList.SelectedItem.ToString();
+            var m = scene.GetModelByName(curName);
+            m.TransformModel(0, 0,(double)numericUpDown1.Value);
             HandleSceneChange();
         }
         #endregion
