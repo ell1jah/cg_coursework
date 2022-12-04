@@ -85,7 +85,7 @@ namespace ExhibitVisualization
             z = (int)z_tmp;
         }
 
-        public static void Transform(ref int x, ref int y, ref int z, double cosTetX, double sinTetX, double cosTetY, double sinTetY, double cosTetZ, double sinTetZ, Point3D centre)
+        public static void Transform(ref double x, ref double y, ref double z, double cosTetX, double sinTetX, double cosTetY, double sinTetY, double cosTetZ, double sinTetZ, Point3D centre)
         {
             double x_tmp = x;
             double y_tmp = y;

@@ -99,7 +99,10 @@
     <Content Include="models\Formula 1 mesh.obj" />
     <Content Include="models\Group4.obj" />
     <Content Include="models\Humvee.obj" />
+    <Content Include="models\Illuminati Logo (OBJ).obj" />
+    <Content Include="models\Mask.obj" />
     <Content Include="models\Only_Spider_with_Animations_Export.obj" />
+    <Content Include="models\pyramid.obj" />
     <Content Include="models\Seahawk.obj" />
     <Content Include="models\Shelby.obj" />
     <Content Include="models\Wine_bottle.obj" />

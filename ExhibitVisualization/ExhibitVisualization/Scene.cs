@@ -18,6 +18,8 @@ namespace ExhibitVisualization
             "C:\\Bmstu\\5sem\\cursache\\cg_coursework\\ExhibitVisualization\\ExhibitVisualization\\models\\Seahawk.obj";
         private const string spiderPath =
             "C:\\Bmstu\\5sem\\cursache\\cg_coursework\\ExhibitVisualization\\ExhibitVisualization\\models\\Only_Spider_with_Animations_Export.obj";
+        private const string mask1 =
+            "C:\\Bmstu\\5sem\\cursache\\cg_coursework\\ExhibitVisualization\\ExhibitVisualization\\models\\Mask.obj";
 
         public Scene(Size size)
         {
@@ -48,10 +50,11 @@ namespace ExhibitVisualization
 
         public void CreateScene()
         {
-            CreateGround(Color.CadetBlue, size.Width / 2, 400, 0, 500, 5);
-            CreateCube(Color.DarkOrange, 300, 100, 0, 150, 300);
-            CreateHelicopter(Color.DarkGreen, size.Width / 2, 400, 500);
-            CreateSpider(Color.Orange, size.Width / 2, 400, 500);
+            // CreateGround(Color.CadetBlue, size.Width / 2, 400, 0, 500, 5);
+            // CreateCube(Color.DarkOrange, 300, 100, 0, 150, 300);
+            // CreateHelicopter(Color.DarkGreen, size.Width / 2, 400, 500);
+            // CreateSpider(Color.Orange, size.Width / 2, 400, 500);
+            CreateMask(Color.Blue, size.Width / 2, 400, 500);
         }
         
         public Scene GetTurnedScene(double tetax, double tetay, double tetaz)
@@ -66,11 +69,33 @@ namespace ExhibitVisualization
             return s;
         }
 
-        public void TurnScene(double tetax, double tetay, double tetaz)
+        public void TurnScene(double tetax, double tetay, double tetaz, Point3D cent)
         {
             foreach (Model m in scene)
             {
-                m.TransformModel(tetax, tetay, tetaz);
+                m.TransformModel(tetax, tetay, tetaz, cent);
+            }
+        }
+
+        public Point3D GetCentre()
+        {
+            Point3D cent = new Point3D(0, 0, 0);
+            
+            foreach (var m in scene)
+            {
+                cent = cent + m.GetCentre();
+            }
+
+            cent = cent / new Point3D(scene.Count, scene.Count, scene.Count);
+
+            return cent;
+        }
+        
+        public void ScaleScene(double k, Point3D centre)
+        {
+            foreach (var model in scene)
+            {
+                model.ScaleModel(k, centre);
             }
         }
 
@@ -99,12 +124,23 @@ namespace ExhibitVisualization
             m.AddVertex(new Point3D(xCent + dx, ground - height, zCent - dz)); // правая верхняя
             m.AddVertex(new Point3D(xCent - dx, ground - height, zCent - dz)); // левая верхняя
 
-            m.CreatePolygon(3, 2, 6, 7); // верхняя
-            m.CreatePolygon(0, 1, 2, 3); // передняя
-            m.CreatePolygon(0, 3, 7, 4); // левая
-            m.CreatePolygon(4, 7, 6, 5); // задняя
-            m.CreatePolygon(1, 5, 6, 2); // правая
-            m.CreatePolygon(0, 4, 5, 1); // нижняя
+            m.CreatePolygon(3, 2, 7); // верхняя
+            m.CreatePolygon(2, 6, 7); // верхняя
+            
+            m.CreatePolygon(1, 2, 3); // передняя
+            m.CreatePolygon(0, 1, 3); // передняя
+            
+            m.CreatePolygon(0, 3, 4); // левая
+            m.CreatePolygon( 3, 7, 4); // левая
+            
+            m.CreatePolygon(4, 7, 5); // задняя
+            m.CreatePolygon(7, 6, 5); // задняя
+            
+            m.CreatePolygon(1, 5, 2); // правая
+            m.CreatePolygon(5, 6, 2); // правая
+            
+            m.CreatePolygon(0, 4, 1); // нижняя
+            m.CreatePolygon(4, 5, 1); // нижняя
 
             if (roof)
             {
@@ -139,6 +175,11 @@ namespace ExhibitVisualization
         public void CreateSpider(Color color, int xCent, int yCent, int zCent)
         {
             LoadModel(spiderPath, color, xCent, yCent, zCent, "Паук");
+        }
+        
+        public void CreateMask(Color color, int xCent, int yCent, int zCent)
+        {
+            LoadModel(mask1, color, xCent, yCent, zCent, "Маска");
         }
 
         private void CreateGround(Color color, int xCent, int dx, int zCent, int dz)

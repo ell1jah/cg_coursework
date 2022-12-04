@@ -107,7 +107,7 @@ namespace ExhibitVisualization
                             continue;
                         }
 
-                        if (ZbufFromSun[newCoord.y][newCoord.x] > newCoord.z + 5) // текущая точка невидима из источника света
+                        if (ZbufFromSun[(int)newCoord.y][(int)newCoord.x] > newCoord.z + 5) // текущая точка невидима из источника света
                         {
                             hm.SetPixel(i, j, Colors.Mix(Color.Black, curPixColor, 0.4f)); 
                         }
@@ -125,42 +125,42 @@ namespace ExhibitVisualization
         /// <summary>
         /// Параллельная реализация алгоритма нахождения теней. Работает медленнее обычной.
         /// </summary>
-        public Bitmap AddShadowsParallel()
-        {
-            Color[][] res = new Color[size.Width][];
-            for (int i = 0; i < size.Width; i++)
-                res[i] = new Color[size.Height];
-
-            Parallel.For(0, size.Width, i =>
-            {
-                Color[] curRow = res[i];
-
-                for (int j = 0; j < size.Height; j++)
-                {
-                    int z = GetZ(i, j);
-                    if (z != zBackground)
-                    {
-                        Point3D newCoord = Transformation.Transform(i, j, z, tettax, tettay, tettaz);
-
-                        if (newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= size.Width || newCoord.y >= size.Height)
-                            continue;
-                        
-                        Color curPixColor = imgPar[i][j];
-
-                        if (ZbufFromSun[newCoord.y][newCoord.x] > newCoord.z + 2) // текущая точка невидима из источника света
-                        {
-                            curRow[j] = Colors.Mix(Color.Black, curPixColor, 0.4f);
-                        }
-                        else
-                        {
-                            curRow[j] = curPixColor;
-                        }
-                    }
-                }
-            });
-
-            return ConnectBitmap(res);
-        }
+        // public Bitmap AddShadowsParallel()
+        // {
+        //     Color[][] res = new Color[size.Width][];
+        //     for (int i = 0; i < size.Width; i++)
+        //         res[i] = new Color[size.Height];
+        //
+        //     Parallel.For(0, size.Width, i =>
+        //     {
+        //         Color[] curRow = res[i];
+        //
+        //         for (int j = 0; j < size.Height; j++)
+        //         {
+        //             int z = GetZ(i, j);
+        //             if (z != zBackground)
+        //             {
+        //                 Point3D newCoord = Transformation.Transform(i, j, z, tettax, tettay, tettaz);
+        //
+        //                 if (newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= size.Width || newCoord.y >= size.Height)
+        //                     continue;
+        //                 
+        //                 Color curPixColor = imgPar[i][j];
+        //
+        //                 if (ZbufFromSun[newCoord.y][newCoord.x] > newCoord.z + 2) // текущая точка невидима из источника света
+        //                 {
+        //                     curRow[j] = Colors.Mix(Color.Black, curPixColor, 0.4f);
+        //                 }
+        //                 else
+        //                 {
+        //                     curRow[j] = curPixColor;
+        //                 }
+        //             }
+        //         }
+        //     });
+        //
+        //     return ConnectBitmap(res);
+        // }
         
         /// <summary>
         /// Объеденяет двумерный массив цветов в Bitmap
@@ -258,10 +258,10 @@ namespace ExhibitVisualization
             
             if (!(point.x < 0 || point.x >= w || point.y < 0 || point.y >= h))
             {
-                if (point.z > buffer[point.y][point.x])
+                if (point.z > buffer[(int)point.y][(int)point.x])
                 {
-                    buffer[point.y][point.x] = point.z;
-                    image.SetPixel(point.x, point.y, color);
+                    buffer[(int)point.y][(int)point.x] = (int)point.z;
+                    image.SetPixel((int)point.x, (int)point.y, color);
                 }
             }
         }

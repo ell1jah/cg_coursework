@@ -58,12 +58,12 @@ namespace ExhibitVisualization
         /// <summary>
         /// Функция сравнения времени двух реализаций (Эксперементальная часть)
         /// </summary>
-        public void CompareTime()
-        {
-            double res = AnalyseTime(zbuf.AddShadowsParallel);
-            double res2 = AnalyseTime(zbuf.AddShadows);
-            ;
-        }
+        // public void CompareTime()
+        // {
+        //     double res = AnalyseTime(zbuf.AddShadowsParallel);
+        //     double res2 = AnalyseTime(zbuf.AddShadows);
+        //     ;
+        // }
 
         public long AnalyseTime(Func<Bitmap> act)
         {
@@ -193,15 +193,58 @@ namespace ExhibitVisualization
             HandleSceneChange();
         }
 
+        private void label5_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void numericUpDown3_ValueChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void objectList_DoubleClick(object sender, EventArgs e)
+        {
+            string curName = objectList.SelectedItem.ToString();
+
+            if (curName == "Камера")
+            {
+                Point3D cent = scene.GetCentre();
+                numericUpDown3.Value = (decimal)cent.x;
+                numericUpDown4.Value = (decimal)cent.y;
+                numericUpDown5.Value = (decimal)cent.z;
+            }
+            else
+            {
+                var m = scene.GetModelByName(curName);
+                Point3D cent = m.GetCentre();
+                numericUpDown3.Value = (decimal)cent.x;
+                numericUpDown4.Value = (decimal)cent.y;
+                numericUpDown5.Value = (decimal)cent.z;
+            }
+        }
+
+        private void button9_Click(object sender, EventArgs e)
+        {
+            string curName = objectList.SelectedItem.ToString();
+
+            if (curName == "Камера")
+            {
+                scene.ScaleScene((double)numericUpDown6.Value, scene.GetCentre());
+            }
+            else
+            {
+                var m = scene.GetModelByName(curName);
+                m.ScaleModel((double)numericUpDown6.Value, m.GetCentre());
+            }
+
+            HandleSceneChange();
+        }
+
         private void HandleSceneChange()
         {
-            scene.TurnScene(tetax, tetay, tetaz);
             zbuf = new Zbuffer(scene, canvas.Size, currentSun);
             canvas.Image = zbuf.AddShadows();
-
-            tetax = 0;
-            tetay = 0;
-            tetaz = 0;
         }
 
         private void label4_Click(object sender, EventArgs e)
@@ -230,12 +273,12 @@ namespace ExhibitVisualization
 
             if (curName == "Камера")
             {
-                tetax -= (double)numericUpDown1.Value;
+                scene.TurnScene(-(double)numericUpDown1.Value, 0, 0, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
             }
             else
             {
                 var m = scene.GetModelByName(curName);
-                m.TransformModel((double)numericUpDown1.Value, 0, 0);
+                m.TransformModel((double)numericUpDown1.Value, 0, 0, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
             }
 
             HandleSceneChange();
@@ -247,12 +290,12 @@ namespace ExhibitVisualization
             
             if (curName == "Камера")
             {
-                tetay -= (double)numericUpDown1.Value;
+                scene.TurnScene(0, -(double)numericUpDown1.Value, 0, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
             }
             else
             {
                 var m = scene.GetModelByName(curName);
-                m.TransformModel(0,(double)numericUpDown1.Value ,0);
+                m.TransformModel(0,(double)numericUpDown1.Value ,0, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
             }
             
             HandleSceneChange();
@@ -264,12 +307,12 @@ namespace ExhibitVisualization
             
             if (curName == "Камера")
             {
-                tetaz -= (double)numericUpDown1.Value;
+                scene.TurnScene(0, 0, -(double)numericUpDown1.Value, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
             }
             else
             {
                 var m = scene.GetModelByName(curName);
-                m.TransformModel(0, 0,(double)numericUpDown1.Value);
+                m.TransformModel(0, 0,(double)numericUpDown1.Value, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
             }
 
             HandleSceneChange();

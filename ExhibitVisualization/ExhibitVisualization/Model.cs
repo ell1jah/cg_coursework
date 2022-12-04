@@ -34,7 +34,7 @@ namespace ExhibitVisualization
             vertices.Add(vertex);
         }
 
-        public void AddVertex(int x, int y, int z)
+        public void AddVertex(double x, double y, double z)
         {
             vertices.Add(new Point3D(x, y, z));
         }
@@ -82,7 +82,7 @@ namespace ExhibitVisualization
         /// <param name="tetax">Угол поворота вокруг x</param>
         /// <param name="tetay">Угол поворота вокруг y</param>
         /// <param name="tetaz">Угол поворота вокруг z</param>
-        public void TransformModel(double tetax, double tetay, double tetaz)
+        public void TransformModel(double tetax, double tetay, double tetaz, Point3D cent)
         {
             tetax = tetax * Math.PI / 180;
             tetay = tetay * Math.PI / 180;
@@ -92,11 +92,11 @@ namespace ExhibitVisualization
             double cosTetZ = Math.Cos(tetaz), sinTetZ = Math.Sin(tetaz);
             foreach (Point3D v in vertices)
             {
-                Transformation.Transform(ref v.x, ref v.y, ref v.z, cosTetX, sinTetX, cosTetY, sinTetY, cosTetZ, sinTetZ, centre);
+                Transformation.Transform(ref v.x, ref v.y, ref v.z, cosTetX, sinTetX, cosTetY, sinTetY, cosTetZ, sinTetZ, cent);
             }
         }
 
-        public void ScaleModel(Point3D k, Point3D centre)
+        public void ScaleModel(double k, Point3D centre)
         {
             foreach (Point3D v in vertices)
             {
@@ -119,7 +119,7 @@ namespace ExhibitVisualization
                 m.AddVertex(p.x, p.y, p.z);
             }
 
-            m.TransformModel(tetax, tetay, tetaz);
+            m.TransformModel(tetax, tetay, tetaz, new Point3D(0, 0, 0));
 
             for(int i = 0; i < indexes.Count; i++)
             {
@@ -130,6 +130,20 @@ namespace ExhibitVisualization
             }
 
             return m;
+        }
+        
+        public Point3D GetCentre()
+        {
+            Point3D cent = new Point3D(0, 0, 0);
+            
+            foreach (Point3D v in vertices)
+            {
+                cent = cent + v;
+            }
+
+            cent = cent / new Point3D(vertices.Count, vertices.Count, vertices.Count);
+
+            return cent;
         }
 
         public static Model LoadModel(string path, Color color, int xCent, int yCent, int zCent, string name)
@@ -148,16 +162,16 @@ namespace ExhibitVisualization
                     var el = line.Split(' ');
                     
                     if (el.Length == 5)
-                        m.AddVertex(new Point3D(xCent + (int)Convert.ToDouble(el[2].Replace('.', ',')),  yCent - (int)Convert.ToDouble(el[3].Replace('.', ',')), zCent + (int)Convert.ToDouble(el[4].Replace('.', ','))));
+                        m.AddVertex(new Point3D(xCent + Convert.ToDouble(el[2].Replace('.', ',')),  yCent - Convert.ToDouble(el[3].Replace('.', ',')), zCent + Convert.ToDouble(el[4].Replace('.', ','))));
                     else
-                        m.AddVertex(new Point3D(xCent +  (int)Convert.ToDouble(el[1].Replace('.', ',')), yCent - (int)Convert.ToDouble(el[2].Replace('.', ',')), zCent + (int)Convert.ToDouble(el[3].Replace('.', ','))));
+                        m.AddVertex(new Point3D(xCent + Convert.ToDouble(el[1].Replace('.', ',')), yCent - Convert.ToDouble(el[2].Replace('.', ',')), zCent + Convert.ToDouble(el[3].Replace('.', ','))));
                 }
                 else if (line[0] == 'f')
                 {
                     var el = line.Split(' ');
 
                     List<int> ind = new List<int>();
-                    for(int i = 1; i < el.Length - 1; i++)
+                    for(int i = 1; i < el.Length; i++)
                     {
                         if (el[i] != "")
                             ind.Add(Convert.ToInt32((el[i].Split('/'))[0].Replace('.', ',')) - 1);
@@ -254,8 +268,8 @@ namespace ExhibitVisualization
         /// <param name="v">Вершины треугольника</param>
         private void CalculatePointsInsideTriangle(List<Point3D> v, int lastXPossible, int lastYPossible, int firstXPossible = 0, int firstYPossible = 0)
         {
-            int yMax, yMin;
-            int[] x = new int[3], y = new int[3];
+            double yMax, yMin;
+            double[] x = new double[3], y = new double[3];
             
             for (int i = 0; i < 3; ++i)
             {
@@ -269,10 +283,10 @@ namespace ExhibitVisualization
             yMin = (yMin < firstYPossible) ? firstYPossible : yMin;
             yMax = (yMax < lastYPossible) ? yMax : lastYPossible;
 
-            int x1 = 0, x2 = 0;
+            double x1 = 0, x2 = 0;
             double z1 = 0, z2 = 0;
             
-            for (int yDot = yMin; yDot <= yMax; yDot++)
+            for (double yDot = yMin; yDot <= yMax; yDot++)
             {
                 int fFirst = 1;
                 for (int n = 0; n < 3; ++n)
@@ -302,9 +316,9 @@ namespace ExhibitVisualization
                     Swap(ref z1, ref z2);
                 }
 
-                int xStart = (x1 < firstXPossible) ? firstXPossible : x1;
-                int xEnd = (x2 < lastXPossible)? x2 : lastXPossible;
-                for (int xDot = xStart; xDot < xEnd; xDot++)
+                double xStart = (x1 < firstXPossible) ? firstXPossible : x1;
+                double xEnd = (x2 < lastXPossible)? x2 : lastXPossible;
+                for (double xDot = xStart; xDot < xEnd; xDot++)
                 {
                     double m = (double)(x1 - xDot) / (x1 - x2);
                     double zDot = z1 + m * (z2 - z1);
@@ -322,7 +336,7 @@ namespace ExhibitVisualization
         public Vector GetNormal()
         {
             int len = v.Count();
-            int a = 0, b = 0, c = 0;
+            double a = 0, b = 0, c = 0;
             for (int i = 0; i < len - 1; i++)
             {
                 a += (v[i].y - v[i + 1].y) * (v[i].z + v[i + 1].z);
@@ -363,8 +377,8 @@ namespace ExhibitVisualization
 
     class Point3D
     {
-        public int x, y, z;
-        public Point3D(int x, int y, int z)
+        public double x, y, z;
+        public Point3D(double x, double y, double z)
         {
             this.x = x;
             this.y = y;
@@ -384,6 +398,16 @@ namespace ExhibitVisualization
         public static Point3D operator *(Point3D a, Point3D b)
         {
             return new Point3D(a.x * b.x, a.y * b.y, a.z * b.z);
+        }
+        
+        public static Point3D operator *(Point3D a, double b)
+        {
+            return new Point3D((int)(a.x * b), (int)(a.y * b), (int)(a.z * b));
+        }
+        
+        public static Point3D operator /(Point3D a, Point3D b)
+        {
+            return new Point3D(a.x / b.x, a.y / b.y, a.z / b.z);
         }
     }
 
