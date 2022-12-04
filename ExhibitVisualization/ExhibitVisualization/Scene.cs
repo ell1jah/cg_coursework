@@ -66,10 +66,26 @@ namespace ExhibitVisualization
             return s;
         }
 
+        public void TurnScene(double tetax, double tetay, double tetaz)
+        {
+            foreach (Model m in scene)
+            {
+                m.TransformModel(tetax, tetay, tetaz);
+            }
+        }
+
+        public void MoveScene(double tetax, double tetay, double tetaz)
+        {
+            foreach (var model in scene)
+            {
+                model.MoveModel(tetax, tetay, tetaz);
+            }
+        }
+
         #region Создание Параллелепипедов
         public void CreateCube(Color color, int xCent, int dx, int zCent, int dz, int height, bool roof = false)
         {
-            Model m = new Model(color, "Куб");
+            Model m = new Model(color, "Куб", new Point3D(xCent, ground - height / 2, zCent));
             
             //передняя
             m.AddVertex(new Point3D(xCent - dx, ground, zCent + dz)); // левая нижняя
@@ -127,7 +143,7 @@ namespace ExhibitVisualization
 
         private void CreateGround(Color color, int xCent, int dx, int zCent, int dz)
         {
-            Model m = new Model(color, "Пол");
+            Model m = new Model(color, "Пол", new Point3D(xCent, ground, zCent));
 
             m.AddVertex(new Point3D(xCent + dx, ground, zCent + dz));
             m.AddVertex(new Point3D(xCent - dx, ground, zCent + dz));
@@ -141,7 +157,7 @@ namespace ExhibitVisualization
 
         private void CreateGround(Color color, int xCent, int dx, int zCent, int dz, int height)
         {
-            Model m = new Model(color, "Пол");
+            Model m = new Model(color, "Пол", new Point3D(xCent, ground + height / 2, zCent));
 
             //передняя
             m.AddVertex(new Point3D(xCent - dx, ground + height, zCent + dz)); // левая нижняя

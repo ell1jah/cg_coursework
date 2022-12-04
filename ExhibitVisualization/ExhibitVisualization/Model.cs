@@ -19,13 +19,14 @@ namespace ExhibitVisualization
         public string name;
         public Point3D centre = new Point3D(0, 0, 0);
         
-        public Model(Color color, string name)
+        public Model(Color color, string name, Point3D centre)
         {
             basicColor = color;
             vertices = new List<Point3D>();
             polygons = new List<Polygon>();
             indexes = new List<int[]>();
             this.name = name;
+            this.centre = centre;
         }
         
         public void AddVertex(Point3D vertex)
@@ -65,6 +66,16 @@ namespace ExhibitVisualization
             polygons.Add(new Polygon(verticesPolygon, basicColor, true));
         }
 
+        public void MoveModel(double tetax, double tetay, double tetaz)
+        {
+            foreach (var v in vertices)
+            {
+                v.x += (int)tetax;
+                v.y += (int)tetay;
+                v.z += (int)tetaz;
+            }
+        }
+
         /// <summary>
         /// Повернуть модель вокруг осей x, y, z
         /// </summary>
@@ -90,7 +101,7 @@ namespace ExhibitVisualization
         /// </summary>
         public Model GetTurnedModel(double tetax, double tetay, double tetaz)
         {
-            Model m = new Model(basicColor, this.name);
+            Model m = new Model(basicColor, this.name, this.centre);
             
             foreach (Point3D p in vertices)
             {
@@ -115,7 +126,7 @@ namespace ExhibitVisualization
             if (!File.Exists(path))
                 return null;
 
-            Model m = new Model(color, name);
+            Model m = new Model(color, name, new Point3D(xCent, yCent, zCent));
             m.centre = new Point3D(xCent, yCent, zCent);
             foreach (string line in File.ReadLines(path))
             {

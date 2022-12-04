@@ -34,6 +34,8 @@ namespace ExhibitVisualization
             g = canvas.CreateGraphics();
             scene = new Scene(canvas.Size);
             scene.CreateScene();
+            
+            objectList.Items.Add("Камера");
 
             foreach (Model m in scene.GetModels())
             {
@@ -135,6 +137,62 @@ namespace ExhibitVisualization
             canvas.Image = zbuf.GetSunImage();
         }
 
+        private void groupBox1_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button6_Click(object sender, EventArgs e)
+        {
+            string curName = objectList.SelectedItem.ToString();
+
+            if (curName == "Камера")
+            {
+                scene.MoveScene(-(double)numericUpDown2.Value, 0, 0);
+            }
+            else
+            {
+                var m = scene.GetModelByName(curName);
+                m.MoveModel((double)numericUpDown2.Value, 0, 0);
+            }
+
+            HandleSceneChange();
+        }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            string curName = objectList.SelectedItem.ToString();
+
+            if (curName == "Камера")
+            {
+                scene.MoveScene(0, -(double)numericUpDown2.Value, 0);
+            }
+            else
+            {
+                var m = scene.GetModelByName(curName);
+                m.MoveModel(0, (double)numericUpDown2.Value, 0);
+            }
+
+            HandleSceneChange();
+        }
+
+        private void button4_Click_1(object sender, EventArgs e)
+        {
+            string curName = objectList.SelectedItem.ToString();
+
+            if (curName == "Камера")
+            {
+                scene.MoveScene(0, 0, -(double)numericUpDown2.Value);
+            }
+            else
+            {
+                var m = scene.GetModelByName(curName);
+                m.MoveModel(0, 0, (double)numericUpDown2.Value);
+            }
+
+            HandleSceneChange();
+        }
+
         private void HandleSceneChange()
         {
             sceneTurned = scene.GetTurnedScene(tetax, tetay, tetaz);
@@ -165,24 +223,51 @@ namespace ExhibitVisualization
         private void button1_Click_1(object sender, EventArgs e)
         {
             string curName = objectList.SelectedItem.ToString();
-            var m = scene.GetModelByName(curName);
-            m.TransformModel((double)numericUpDown1.Value, 0, 0);
+
+            if (curName == "Камера")
+            {
+                tetax -= (double)numericUpDown1.Value;
+            }
+            else
+            {
+                var m = scene.GetModelByName(curName);
+                m.TransformModel((double)numericUpDown1.Value, 0, 0);
+            }
+
             HandleSceneChange();
         }
 
         private void button2_Click_1(object sender, EventArgs e)
         {
             string curName = objectList.SelectedItem.ToString();
-            var m = scene.GetModelByName(curName);
-            m.TransformModel(0,(double)numericUpDown1.Value ,0);
+            
+            if (curName == "Камера")
+            {
+                tetay -= (double)numericUpDown1.Value;
+            }
+            else
+            {
+                var m = scene.GetModelByName(curName);
+                m.TransformModel(0,(double)numericUpDown1.Value ,0);
+            }
+            
             HandleSceneChange();
         }
 
         private void button3_Click_1(object sender, EventArgs e)
         {
             string curName = objectList.SelectedItem.ToString();
-            var m = scene.GetModelByName(curName);
-            m.TransformModel(0, 0,(double)numericUpDown1.Value);
+            
+            if (curName == "Камера")
+            {
+                tetaz -= (double)numericUpDown1.Value;
+            }
+            else
+            {
+                var m = scene.GetModelByName(curName);
+                m.TransformModel(0, 0,(double)numericUpDown1.Value);
+            }
+
             HandleSceneChange();
         }
         #endregion
