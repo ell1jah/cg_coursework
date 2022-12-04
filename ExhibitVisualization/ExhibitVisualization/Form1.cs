@@ -195,9 +195,13 @@ namespace ExhibitVisualization
 
         private void HandleSceneChange()
         {
-            sceneTurned = scene.GetTurnedScene(tetax, tetay, tetaz);
-            zbuf = new Zbuffer(sceneTurned, canvas.Size, currentSun);
+            scene.TurnScene(tetax, tetay, tetaz);
+            zbuf = new Zbuffer(scene, canvas.Size, currentSun);
             canvas.Image = zbuf.AddShadows();
+
+            tetax = 0;
+            tetay = 0;
+            tetaz = 0;
         }
 
         private void label4_Click(object sender, EventArgs e)

@@ -51,7 +51,7 @@ namespace ExhibitVisualization
             CreateGround(Color.CadetBlue, size.Width / 2, 400, 0, 500, 5);
             CreateCube(Color.DarkOrange, 300, 100, 0, 150, 300);
             CreateHelicopter(Color.DarkGreen, size.Width / 2, 400, 500);
-            CreateSpider(Color.Black, size.Width / 2, 400, 500);
+            CreateSpider(Color.Orange, size.Width / 2, 400, 500);
         }
         
         public Scene GetTurnedScene(double tetax, double tetay, double tetaz)

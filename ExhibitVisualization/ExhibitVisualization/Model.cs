@@ -95,6 +95,17 @@ namespace ExhibitVisualization
                 Transformation.Transform(ref v.x, ref v.y, ref v.z, cosTetX, sinTetX, cosTetY, sinTetY, cosTetZ, sinTetZ, centre);
             }
         }
+
+        public void ScaleModel(Point3D k, Point3D centre)
+        {
+            foreach (Point3D v in vertices)
+            {
+                Point3D changed = (v - centre) * k + centre;
+                v.x = changed.x;
+                v.y = changed.y;
+                v.z = changed.z;
+            }
+        }
         
         /// <summary>
         /// Получить модель, повернутую на углы teta
@@ -358,6 +369,21 @@ namespace ExhibitVisualization
             this.x = x;
             this.y = y;
             this.z = z;
+        }
+
+        public static Point3D operator +(Point3D a, Point3D b)
+        {
+            return new Point3D(a.x + b.x, a.y + b.y, a.z + b.z);
+        }
+        
+        public static Point3D operator -(Point3D a, Point3D b)
+        {
+            return new Point3D(a.x - b.x, a.y - b.y, a.z - b.z);
+        }
+        
+        public static Point3D operator *(Point3D a, Point3D b)
+        {
+            return new Point3D(a.x * b.x, a.y * b.y, a.z * b.z);
         }
     }
 
