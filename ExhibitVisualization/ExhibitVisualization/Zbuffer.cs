@@ -13,11 +13,15 @@ namespace ExhibitVisualization
         private Bitmap img;
         private Color[][] imgPar;
         private Bitmap imgFromSun;
+        private Bitmap imgFromSun2;
         private int[][] Zbuf;
         private int[][] ZbufFromSun;
+        private int[][] ZbufFromSun2;
         LightSource sun;
+        LightSource sun2;
         Size size;
         double tettax, tettay, tettaz;
+        double tettax2, tettay2, tettaz2;
 
         private static readonly int zBackground = -10000;
         
@@ -28,15 +32,18 @@ namespace ExhibitVisualization
         /// <param name="models">Список всех моделей сцены</param>
         /// <param name="size">Размер сцены</param>
         /// <returns></returns>
-        public Zbuffer(Scene s, Size size, LightSource sun)
+        public Zbuffer(Scene s, Size size, LightSource sun, LightSource sun2)
         {
             img = new Bitmap(size.Width, size.Height);
             imgFromSun = new Bitmap(size.Width, size.Height);
+            imgFromSun2 = new Bitmap(size.Width, size.Height);
 
             InitBuf(ref Zbuf, size.Width, size.Height, zBackground);
             InitBuf(ref ZbufFromSun, size.Width, size.Height, zBackground);
+            InitBuf(ref ZbufFromSun2, size.Width, size.Height, zBackground);
 
             this.sun = sun;
+            this.sun2 = sun2;
             this.size = size;
             InitTeta();
 
@@ -49,7 +56,8 @@ namespace ExhibitVisualization
             foreach (Model m in s.GetModels())
             {
                 ProcessModel(Zbuf, img, m);
-                ProcessModelForSun(ZbufFromSun, imgFromSun, m.GetTurnedModel(tettax, tettay, tettaz, new Point3D(0, 0, 0)));
+                ProcessModelForSun(ZbufFromSun, imgFromSun, m.GetTurnedModel(tettax, tettay, tettaz, new Point3D(0, 0, 0)), sun);
+                ProcessModelForSun(ZbufFromSun2, imgFromSun2, m.GetTurnedModel(tettax2, tettay2, tettaz2, new Point3D(0, 0, 0)), sun2);
             }
         }
 
@@ -61,6 +69,10 @@ namespace ExhibitVisualization
             tettax = sun.tetax;
             tettay = sun.tetay;
             tettaz = sun.tetaz;
+            
+            tettax2 = sun2.tetax;
+            tettay2 = sun2.tetay;
+            tettaz2 = sun2.tetaz;
         }
 
         /// <summary>
@@ -99,22 +111,36 @@ namespace ExhibitVisualization
                     if (z != zBackground) 
                     {
                         Point3D newCoord = Transformation.Transform(i, j, z, tettax, tettay, tettaz);
+                        Point3D newCoord2 = Transformation.Transform(i, j, z, tettax2, tettay2, tettaz2);
                         
-                        Color curPixColor = img.GetPixel(i, j);
+                        Color curPixColor = img.GetPixel(i, j); ;
                         if (newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= size.Width || newCoord.y >= size.Height)
                         {
                             hm.SetPixel(i, j, curPixColor); //тени не считаются, чтобы увидеть эти места -> убрать эту строку;
                             continue;
                         }
 
+                        Color c1, c2;
+
                         if (ZbufFromSun[(int)newCoord.y][(int)newCoord.x] > newCoord.z + 5) // текущая точка невидима из источника света
                         {
-                            hm.SetPixel(i, j, Colors.Mix(Color.Black, curPixColor, 0.4f)); 
+                            c1 = Colors.Mix(Color.Black, curPixColor, 0.4f); 
                         }
                         else
                         {
-                            hm.SetPixel(i, j, curPixColor);
+                            c1 = curPixColor;
                         }
+                        
+                        if (ZbufFromSun2[(int)newCoord2.y][(int)newCoord2.x] > newCoord2.z + 5) // текущая точка невидима из источника света
+                        {
+                            c2 = Colors.Mix(Color.Black, curPixColor, 0.4f); 
+                        }
+                        else
+                        {
+                            c2 = curPixColor;
+                        }
+                        
+                        hm.SetPixel(i, j, Colors.Mix(c1, c2, 0.5f)); 
                     }
                 }
             }
@@ -122,46 +148,6 @@ namespace ExhibitVisualization
             return hm;
         }
 
-        /// <summary>
-        /// Параллельная реализация алгоритма нахождения теней. Работает медленнее обычной.
-        /// </summary>
-        // public Bitmap AddShadowsParallel()
-        // {
-        //     Color[][] res = new Color[size.Width][];
-        //     for (int i = 0; i < size.Width; i++)
-        //         res[i] = new Color[size.Height];
-        //
-        //     Parallel.For(0, size.Width, i =>
-        //     {
-        //         Color[] curRow = res[i];
-        //
-        //         for (int j = 0; j < size.Height; j++)
-        //         {
-        //             int z = GetZ(i, j);
-        //             if (z != zBackground)
-        //             {
-        //                 Point3D newCoord = Transformation.Transform(i, j, z, tettax, tettay, tettaz);
-        //
-        //                 if (newCoord.x < 0 || newCoord.y < 0 || newCoord.x >= size.Width || newCoord.y >= size.Height)
-        //                     continue;
-        //                 
-        //                 Color curPixColor = imgPar[i][j];
-        //
-        //                 if (ZbufFromSun[newCoord.y][newCoord.x] > newCoord.z + 2) // текущая точка невидима из источника света
-        //                 {
-        //                     curRow[j] = Colors.Mix(Color.Black, curPixColor, 0.4f);
-        //                 }
-        //                 else
-        //                 {
-        //                     curRow[j] = curPixColor;
-        //                 }
-        //             }
-        //         }
-        //     });
-        //
-        //     return ConnectBitmap(res);
-        // }
-        
         /// <summary>
         /// Объеденяет двумерный массив цветов в Bitmap
         /// </summary>
@@ -217,7 +203,7 @@ namespace ExhibitVisualization
             foreach (Polygon polygon in m.polygons)
             {
                 polygon.CalculatePointsInside(img.Width, img.Height);
-                draw = polygon.GetColor(sun);
+                draw = Colors.Mix(polygon.GetColor(sun), polygon.GetColor(sun2), 0.5f);
                 foreach (Point3D point in polygon.pointsInside)
                 {
                     ProcessPoint(buffer, image, point, draw);
@@ -232,7 +218,7 @@ namespace ExhibitVisualization
         /// <param name="buffer">Используемый буфер</param>
         /// <param name="image">Картинка для вывода</param>
         /// <param name="m">Модель</param>
-        private void ProcessModelForSun(int[][] buffer, Bitmap image, Model m)
+        private void ProcessModelForSun(int[][] buffer, Bitmap image, Model m, LightSource sun)
         {
             Color draw;
             foreach (Polygon polygon in m.polygons)

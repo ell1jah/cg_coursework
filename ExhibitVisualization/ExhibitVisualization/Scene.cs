@@ -20,6 +20,8 @@ namespace ExhibitVisualization
             "C:\\Bmstu\\5sem\\cursache\\cg_coursework\\ExhibitVisualization\\ExhibitVisualization\\models\\Only_Spider_with_Animations_Export.obj";
         private const string mask1 =
             "C:\\Bmstu\\5sem\\cursache\\cg_coursework\\ExhibitVisualization\\ExhibitVisualization\\models\\Mask.obj";
+        private const string pyramid =
+            "C:\\Bmstu\\5sem\\cursache\\cg_coursework\\ExhibitVisualization\\ExhibitVisualization\\models\\pyramid.obj";
 
         public Scene(Size size)
         {
@@ -62,10 +64,11 @@ namespace ExhibitVisualization
         public void CreateScene()
         {
             // CreateGround(Color.CadetBlue, size.Width / 2, 400, 0, 500, 5);
-            CreateCube(Color.DarkOrange, 300, 100, 0, 150, 300);
+            // CreateCube(Color.DarkOrange, 300, 100, 0, 150, 300);
             // CreateHelicopter(Color.DarkGreen, size.Width / 2, 400, 500);
-            CreateSpider(Color.Orange, size.Width / 2, 400, 500);
+            // CreateSpider(Color.Orange, size.Width / 2, 400, 500);
             // CreateMask(Color.YellowGreen, size.Width / 2, 350, 500);
+            CreatePyramid(Color.YellowGreen, size.Width / 2, 350, 500);
             
             // var m = this.GetModelByName("Маска");
             // m.ScaleModel(1500, m.GetCentre());
@@ -184,6 +187,11 @@ namespace ExhibitVisualization
         public void CreateHelicopter(Color color, int xCent, int yCent, int zCent)
         {
             LoadModel(helicopterPath, color, xCent, yCent, zCent, "Вертолет");
+        }
+        
+        public void CreatePyramid(Color color, int xCent, int yCent, int zCent)
+        {
+            LoadModel(pyramid, color, xCent, yCent, zCent, "Пирамида");
         }
         
         public void CreateSpider(Color color, int xCent, int yCent, int zCent)

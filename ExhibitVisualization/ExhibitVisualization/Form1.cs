@@ -54,11 +54,6 @@ namespace ExhibitVisualization
             HandleSceneChange();
         }
 
-        private void canvas_MouseMove(object sender, MouseEventArgs e)
-        {
-            label12.Text = zbuf.GetZ(e.X, e.Y).ToString();
-        }
-        
         /// <summary>
         /// Функция сравнения времени двух реализаций (Эксперементальная часть)
         /// </summary>
@@ -251,7 +246,7 @@ namespace ExhibitVisualization
 
         private void HandleSceneChange()
         {
-            zbuf = new Zbuffer(scene, canvas.Size, sun1);
+            zbuf = new Zbuffer(scene, canvas.Size, sun1, sun2);
             canvas.Image = zbuf.AddShadows();
         }
 
