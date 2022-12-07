@@ -110,7 +110,7 @@ namespace ExhibitVisualization
         /// <summary>
         /// Получить модель, повернутую на углы teta
         /// </summary>
-        public Model GetTurnedModel(double tetax, double tetay, double tetaz)
+        public Model GetTurnedModel(double tetax, double tetay, double tetaz, Point3D cent)
         {
             Model m = new Model(basicColor, this.name, this.centre);
             
@@ -119,7 +119,7 @@ namespace ExhibitVisualization
                 m.AddVertex(p.x, p.y, p.z);
             }
 
-            m.TransformModel(tetax, tetay, tetaz, new Point3D(0, 0, 0));
+            m.TransformModel(tetax, tetay, tetaz, cent);
 
             for(int i = 0; i < indexes.Count; i++)
             {

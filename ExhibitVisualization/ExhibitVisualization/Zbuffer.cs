@@ -49,7 +49,7 @@ namespace ExhibitVisualization
             foreach (Model m in s.GetModels())
             {
                 ProcessModel(Zbuf, img, m);
-                ProcessModelForSun(ZbufFromSun, imgFromSun, m.GetTurnedModel(tettax, tettay, tettaz));
+                ProcessModelForSun(ZbufFromSun, imgFromSun, m.GetTurnedModel(tettax, tettay, tettaz, new Point3D(0, 0, 0)));
             }
         }
 

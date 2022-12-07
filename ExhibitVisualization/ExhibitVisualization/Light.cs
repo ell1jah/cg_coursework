@@ -21,7 +21,26 @@ namespace ExhibitVisualization
             this.tetay = tetay;
         }
 
-        
+        public void Rotate(double x, double y, double z)
+        {
+            tetax = (tetax + x) % 360;
+            if (tetax < -180)
+                tetax += 360;
+            else if (tetax > 180)
+                tetax -= 360;
+
+            tetay = (tetay + y) % 360;
+            if (tetay < -180)
+                tetay += 360;
+            else if (tetay > 180)
+                tetay -= 360;
+            
+            tetaz = (tetaz + z) % 360;
+            if (tetaz < -180)
+                tetaz += 360;
+            else if (tetaz > 180)
+                tetaz -= 360;
+        }
     }
 
 }

@@ -47,14 +47,28 @@ namespace ExhibitVisualization
 
             return null;
         }
+        
+        public int GetModelIndexByName(string name)
+        {
+            for (int i = 0; i < scene.Count; i++)
+            {
+                if (scene[i].name == name)
+                    return i;
+            }
+
+            return -1;
+        }
 
         public void CreateScene()
         {
             // CreateGround(Color.CadetBlue, size.Width / 2, 400, 0, 500, 5);
-            // CreateCube(Color.DarkOrange, 300, 100, 0, 150, 300);
+            CreateCube(Color.DarkOrange, 300, 100, 0, 150, 300);
             // CreateHelicopter(Color.DarkGreen, size.Width / 2, 400, 500);
-            // CreateSpider(Color.Orange, size.Width / 2, 400, 500);
-            CreateMask(Color.Blue, size.Width / 2, 400, 500);
+            CreateSpider(Color.Orange, size.Width / 2, 400, 500);
+            // CreateMask(Color.YellowGreen, size.Width / 2, 350, 500);
+            
+            // var m = this.GetModelByName("Маска");
+            // m.ScaleModel(1500, m.GetCentre());
         }
         
         public Scene GetTurnedScene(double tetax, double tetay, double tetaz)
@@ -63,7 +77,7 @@ namespace ExhibitVisualization
 
             foreach (Model m in scene)
             {
-                s.AddModel(m.GetTurnedModel(tetax, tetay, tetaz));
+                s.AddModel(m.GetTurnedModel(tetax, tetay, tetaz, new Point3D(0, 0, 0)));
             }
 
             return s;
@@ -71,9 +85,9 @@ namespace ExhibitVisualization
 
         public void TurnScene(double tetax, double tetay, double tetaz, Point3D cent)
         {
-            foreach (Model m in scene)
+            for (int i = 0; i < scene.Count; i++)
             {
-                m.TransformModel(tetax, tetay, tetaz, cent);
+                scene[i] = scene[i].GetTurnedModel(tetax, tetay, tetaz, cent);
             }
         }
 

@@ -20,7 +20,7 @@ namespace ExhibitVisualization
         Scene scene, sceneTurned;
         double tetax, tetay, tetaz;
 
-        LightSource sun1, sun2, sun3, sun4, sun5, currentSun;
+        LightSource sun1, sun2;
         Zbuffer zbuf;
         ParticleSystem rain;
         
@@ -36,6 +36,9 @@ namespace ExhibitVisualization
             scene.CreateScene();
             
             objectList.Items.Add("Камера");
+            
+            listBox1.Items.Add("1");
+            listBox1.Items.Add("2");
 
             foreach (Model m in scene.GetModels())
             {
@@ -43,6 +46,7 @@ namespace ExhibitVisualization
             }
 
             objectList.SetSelected(0, true);
+            listBox1.SetSelected(0, true);
 
             //Model building = Model.LoadModel(@"D:\GitHub\bmstu_CG_CP\ExhibitVisualization\ExhibitVisualization\res\power.obj");
             //scene.Add(building);
@@ -78,64 +82,12 @@ namespace ExhibitVisualization
             return (long)(stopWatch.Elapsed.Ticks)/(long)n;
         }
 
-        #region Установка освещения
-        private void button1_Click(object sender, EventArgs e)
-        {
-            currentSun = sun1;
-            HandleSceneChange();
-        }
-
-        private void button2_Click(object sender, EventArgs e)
-        {
-            currentSun = sun2;
-            HandleSceneChange();
-        }
-
-        private void button3_Click(object sender, EventArgs e)
-        {
-            currentSun = sun3;
-            HandleSceneChange();
-        }
-
-        private void button4_Click(object sender, EventArgs e)
-        {
-            currentSun = sun4;
-            HandleSceneChange();
-        }
-
-        private void button5_Click(object sender, EventArgs e)
-        {
-            currentSun = sun5;
-            HandleSceneChange();
-        }
-
         private void SetSun()
         {
-            sun1 = new LightSource(Color.White, -90, new Vector(1, 0, 0));
+            sun1 = new LightSource(Color.White, -90, new Vector(0, 0, -1));
             sun2 = new LightSource(Color.White, -110, new Vector(0.4, -0.5, 0));
-            sun3 = new LightSource(Color.White, 180, new Vector(0, -1, 0));
-            sun4 = new LightSource(Color.White, 110, new Vector(-0.4, -0.5, 0));
-            sun5 = new LightSource(Color.White, 90, new Vector(-1, 0, 0));
-            currentSun = sun3;
-        }
-        #endregion
-
-        #region Сцена
-        
-        private void buttonView_Click(object sender, EventArgs e)
-        {
-            canvas.Image = zbuf.GetImage();
         }
 
-        private void buttonViewShadows_Click(object sender, EventArgs e)
-        {
-            canvas.Image = zbuf.AddShadows();
-        }
-
-        private void buttonViewSun_Click(object sender, EventArgs e)
-        {
-            canvas.Image = zbuf.GetSunImage();
-        }
 
         private void groupBox1_Enter(object sender, EventArgs e)
         {
@@ -241,15 +193,66 @@ namespace ExhibitVisualization
             HandleSceneChange();
         }
 
-        private void HandleSceneChange()
+        private void listBox1_DoubleClick(object sender, EventArgs e)
         {
-            zbuf = new Zbuffer(scene, canvas.Size, currentSun);
-            canvas.Image = zbuf.AddShadows();
+            string curName = listBox1.SelectedItem.ToString();
+
+            double t1, t2, t3;
+            
+            if (curName == "1")
+            {
+                t1 = sun1.direction.x;
+                t2 = sun1.direction.y;
+                t3 = sun1.direction.z;
+            }
+            else
+            {
+                t1 = sun2.direction.x;
+                t2 = sun2.direction.y;
+                t3 = sun2.direction.z;
+            }
+            
+            numericUpDown9.Value = (decimal)t1;
+            numericUpDown8.Value = (decimal)t2;
+            numericUpDown7.Value = (decimal)t3;
         }
 
-        private void label4_Click(object sender, EventArgs e)
+        private void button10_Click(object sender, EventArgs e)
         {
+            string curName = listBox1.SelectedItem.ToString();
 
+            double t1, t2, t3;
+            
+            if (curName == "1")
+            {
+                sun1.direction.x = (double)numericUpDown9.Value;
+                sun1.direction.y = (double)numericUpDown8.Value;
+                sun1.direction.z = (double)numericUpDown7.Value;
+                t1 = sun1.direction.x;
+                t2 = sun1.direction.y;
+                t3 = sun1.direction.z;
+            }
+            else
+            {
+                sun2.direction.x = (double)numericUpDown9.Value;
+                sun2.direction.y = (double)numericUpDown8.Value;
+                sun2.direction.z = (double)numericUpDown7.Value;
+                t1 = sun2.direction.x;
+                t2 = sun2.direction.y;
+                t3 = sun2.direction.z;
+            }
+            
+            numericUpDown9.Value = (decimal)t1;
+            numericUpDown8.Value = (decimal)t2;
+            numericUpDown7.Value = (decimal)t3;
+            
+            HandleSceneChange();
+        }
+
+        private void HandleSceneChange()
+        {
+            zbuf = new Zbuffer(scene, canvas.Size, sun1);
+            canvas.Image = zbuf.AddShadows();
         }
 
         private void groupBox6_Enter(object sender, EventArgs e)
@@ -258,6 +261,11 @@ namespace ExhibitVisualization
         }
 
         private void groupBox7_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void numericUpDown7_ValueChanged(object sender, EventArgs e)
         {
 
         }
@@ -277,8 +285,8 @@ namespace ExhibitVisualization
             }
             else
             {
-                var m = scene.GetModelByName(curName);
-                m.TransformModel((double)numericUpDown1.Value, 0, 0, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
+                int m = scene.GetModelIndexByName(curName);
+                scene.GetModels()[m] = scene.GetModels()[m].GetTurnedModel((double)numericUpDown1.Value, 0, 0, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
             }
 
             HandleSceneChange();
@@ -294,8 +302,8 @@ namespace ExhibitVisualization
             }
             else
             {
-                var m = scene.GetModelByName(curName);
-                m.TransformModel(0,(double)numericUpDown1.Value ,0, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
+                int m = scene.GetModelIndexByName(curName);
+                scene.GetModels()[m] = scene.GetModels()[m].GetTurnedModel(0,(double)numericUpDown1.Value ,0, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
             }
             
             HandleSceneChange();
@@ -311,14 +319,11 @@ namespace ExhibitVisualization
             }
             else
             {
-                var m = scene.GetModelByName(curName);
-                m.TransformModel(0, 0,(double)numericUpDown1.Value, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
+                int m = scene.GetModelIndexByName(curName);
+                scene.GetModels()[m] = scene.GetModels()[m].GetTurnedModel(0, 0,(double)numericUpDown1.Value, new Point3D((int)numericUpDown3.Value, (int)numericUpDown4.Value, (int)numericUpDown5.Value));
             }
 
             HandleSceneChange();
         }
-        #endregion
-        
-
     }
 }
