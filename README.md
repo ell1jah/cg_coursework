@@ -14,6 +14,6 @@
 
 ## Примеры работы программы
 
-![](https://github.com/ell1jah/cg_coursework/RPZ/sources/screen1.png)
+![](https://github.com/ell1jah/cg_coursework/raw/master/RPZ/sources/screen2.png)
 
-![](https://github.com/ell1jah/cg_coursework/RPZ/sources/screen2.png)
+![](https://github.com/ell1jah/cg_coursework/raw/master/RPZ/sources/screen1.png)
