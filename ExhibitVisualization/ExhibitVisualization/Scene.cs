@@ -63,13 +63,27 @@ namespace ExhibitVisualization
 
         public void CreateScene()
         {
-            // CreateGround(Color.CadetBlue, size.Width / 2, 400, 0, 500, 5);
+            CreateGround(Color.Gray, size.Width / 2, 900, 500, 900, 5);
             // CreateCube(Color.DarkOrange, 300, 100, 0, 150, 300);
             // CreateHelicopter(Color.DarkGreen, size.Width / 2, 400, 500);
-            // CreateSpider(Color.Orange, size.Width / 2, 400, 500);
-            // CreateMask(Color.YellowGreen, size.Width / 2, 350, 500);
-            CreatePyramid(Color.YellowGreen, size.Width / 2, 350, 500);
             
+            CreateSpider(Color.Orange, size.Width / 2, 400, 500);
+            var s = GetModelByName("Паук");
+            s.MoveModel(-300, 0, 300);
+            
+            CreateMask(Color.YellowGreen, size.Width / 2, 400, 500);
+            var m = GetModelByName("Маска");
+            m.ScaleModel(600.0, m.GetCentre());
+            int mi = GetModelIndexByName("Маска");
+            scene[mi] = scene[mi].GetTurnedModel(90, 0, 0, new Point3D(size.Width / 2, 400, 500));
+            m = GetModelByName("Маска");
+            m.MoveModel(0, -12, 0);
+            
+            CreatePyramid(Color.CadetBlue, size.Width / 2, 400, 500);
+            var p = GetModelByName("Пирамида");
+            p.ScaleModel(20, p.GetCentre());
+            p.MoveModel(300, -105, 300);
+
             // var m = this.GetModelByName("Маска");
             // m.ScaleModel(1500, m.GetCentre());
         }
